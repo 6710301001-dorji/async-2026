@@ -21,7 +21,13 @@ async def claim(client: httpx.AsyncClient, server_url: str, student_id: str):
 
 async def main(server_url: str):
     # Each virtual student sends two claims, like five separate group members.
-    hunters = [f"VIRTUAL-STUDENT-{number:02d}" for number in range(1, 6)]
+    hunters = [
+        "6710301001",
+        "SIMULATED-STUDENT-02",
+        "SIMULATED-STUDENT-03",
+        "SIMULATED-STUDENT-04",
+        "SIMULATED-STUDENT-05",
+    ]
     async with httpx.AsyncClient() as client:
         tasks = [claim(client, server_url, hunter) for hunter in hunters for _ in range(2)]
         results = await asyncio.gather(*tasks)
