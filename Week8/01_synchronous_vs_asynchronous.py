@@ -1,34 +1,34 @@
 import asyncio
 import time
 
-# --- แบบ 1: Synchronous (Blocking) ---
+# --- Method 1: Synchronous (Blocking) ---
 def sync_task(name, delay):
-    print(f"[Sync] เริ่มงาน {name} (ต้องใช้เวลา {delay} วินาที)...")
-    time.sleep(delay)  # CPU หยุดนิ่งเพื่อนั่งรอตรงนี้
-    print(f"[Sync] งาน {name} เสร็จสิ้น!")
+    print(f"[Sync] Starting task {name} (takes {delay} seconds)...")
+    time.sleep(delay)  # The CPU remains idle while waiting here
+    print(f"[Sync] Task {name} completed!")
 
 def main_sync():
     start_time = time.time()
-    print("=== เริ่มทำงานแบบ Synchronous ===")
+    print("=== Starting Synchronous Execution ===")
     sync_task("A", 2)
     sync_task("B", 3)
-    print(f"เวลารวมแบบ Sync: {time.time() - start_time:.2f} วินาที\n")
+    print(f"Total Sync time: {time.time() - start_time:.2f} seconds\n")
 
-# --- แบบ 2: Asynchronous (Non-blocking) ---
+# --- Method 2: Asynchronous (Non-blocking) ---
 async def async_task(name, delay):
-    print(f"[Async] เริ่มงาน {name} (ต้องใช้เวลา {delay} วินาที)...")
-    await asyncio.sleep(delay)  # สลับให้ Event Loop ไปรันงานอื่นระหว่างรอ
-    print(f"[Async] งาน {name} เสร็จสิ้น!")
+    print(f"[Async] Starting task {name} (takes {delay} seconds)...")
+    await asyncio.sleep(delay)  # Let the Event Loop run another task while waiting
+    print(f"[Async] Task {name} completed!")
 
 async def main_async():
     start_time = time.time()
-    print("=== เริ่มทำงานแบบ Asynchronous ===")
-    # รันงาน A และ B พร้อมกันบน Event Loop
+    print("=== Starting Asynchronous Execution ===")
+    # Run tasks A and B concurrently on the Event Loop
     await asyncio.gather(
         async_task("A", 2),
         async_task("B", 3)
     )
-    print(f"เวลารวมแบบ Async: {time.time() - start_time:.2f} วินาที")
+    print(f"Total Async time: {time.time() - start_time:.2f} seconds")
 
 if __name__ == "__main__":
     main_sync()

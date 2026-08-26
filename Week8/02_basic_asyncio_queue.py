@@ -1,30 +1,30 @@
 import asyncio
 
 async def producer(queue: asyncio.Queue):
-    print("[Producer] กำลังเตรียมส่งข้อมูลเข้าคิว...")
+    print("[Producer] Preparing to send data to the queue...")
     for item in [" Order #1", "Order #2", "Order #3"]:
-        print(f"[Producer] ส่งข้อมูล: {item}")
-        await queue.put(item)  # ใส่ข้อมูลเข้าคิว (FIFO)
+        print(f"[Producer] Sending data: {item}")
+        await queue.put(item)  # Put data into the queue (FIFO)
         await asyncio.sleep(0.5)
 
 async def consumer(queue: asyncio.Queue):
-    print("[Consumer] เริ่มการรอรับข้อมูลจากคิว...")
+    print("[Consumer] Waiting to receive data from the queue...")
     while True:
-        # ดึงข้อมูลออกจากคิว (ตัวที่เข้ามาก่อน จะถูกดึงออกมาก่อน)
+        # Get data from the queue (the first item in is the first item out)
         item = await queue.get()
-        print(f"[Consumer] ดึงข้อมูลออกมาประมวลผล: {item}")
+        print(f"[Consumer] Retrieved data for processing: {item}")
         await asyncio.sleep(1)
         
-        # เงื่อนไขหยุดการทำงานเมื่อเจอรายการสุดท้าย
+        # Stop when the final item is received
         if item == "Order #3":
-            print("[Consumer] ประมวลผลครบหมดแล้ว!")
+            print("[Consumer] All items have been processed!")
             break
 
 async def main():
-    # สร้าง asyncio.Queue บน Event Loop
+    # Create an asyncio.Queue on the Event Loop
     queue = asyncio.Queue()
     
-    # รัน Producer และ Consumer ไปพร้อมกัน
+    # Run the Producer and Consumer concurrently
     await asyncio.gather(
         producer(queue),
         consumer(queue)

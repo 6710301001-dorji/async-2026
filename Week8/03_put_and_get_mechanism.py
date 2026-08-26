@@ -1,24 +1,24 @@
 import asyncio
 
 async def slow_producer(queue: asyncio.Queue):
-    print("[Producer] เริ่มผลิตงาน...")
-    await asyncio.sleep(2)  # แกล้งทำเป็นทำงานช้า 2 วินาที
+    print("[Producer] Starting production...")
+    await asyncio.sleep(2)  # Simulate two seconds of slow work
     
-    print("[Producer] ผลิตงานชิ้นที่ 1 เสร็จแล้ว ดันเข้าคิว!")
+    print("[Producer] Item 1 is ready and has been added to the queue!")
     await queue.put("Data-Alpha")
 
 async def eager_consumer(queue: asyncio.Queue):
-    print("[Consumer] พยายามจะ get() ข้อมูลทันที...")
+    print("[Consumer] Trying to get() data immediately...")
     
-    # ณ จุดนี้ คิวยังว่างเปล่า! คำสั่ง await queue.get() จะทำให้ Consumer "รอ" 
-    # โดยสลับไปให้ระบบรัน slow_producer ต่อโดยไม่แฮงก์
+    # The queue is currently empty, so await queue.get() makes the Consumer wait.
+    # Control switches to slow_producer, allowing it to continue without freezing the program.
     data = await queue.get()
-    print(f"[Consumer] ได้รับข้อมูลสำเร็จ: {data}")
+    print(f"[Consumer] Data received successfully: {data}")
 
 async def main():
     queue = asyncio.Queue()
     
-    print("=== เริ่มการทดสอบ Get ขณะคิวว่าง ===")
+    print("=== Testing Get While the Queue Is Empty ===")
     await asyncio.gather(
         eager_consumer(queue),
         slow_producer(queue)
